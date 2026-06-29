@@ -40,18 +40,30 @@ def _path_key(path: Path) -> str:
         return str(path.absolute())
 
 
+def _enable_dpi_awareness() -> None:
+    if sys.platform != "win32":
+        return
+    try:
+        import ctypes
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    except Exception:
+        try:
+            ctypes.windll.user32.SetProcessDPIAware()
+        except Exception:
+            pass
+
+
 class FileNamerApp:
     def __init__(self, root: tk.Tk):
         self.root = root
         self.root.title("FileNamer")
-        self.root.geometry("620x520")
-        self.root.minsize(500, 420)
         self.root.configure(bg="#1e1e2e")
 
         self.files: list[Path] = []
 
         self._build_ui()
         self._setup_drag_drop()
+        self._fit_window()
 
     def _build_ui(self):
         style_frame = tk.Frame(self.root, bg="#1e1e2e", padx=24, pady=20)
@@ -80,7 +92,7 @@ class FileNamerApp:
             bg="#313244",
             highlightbackground="#89b4fa",
             highlightthickness=2,
-            height=140,
+            height=100,
         )
         self.drop_zone.pack(fill=tk.X, pady=(0, 12))
         self.drop_zone.pack_propagate(False)
@@ -169,6 +181,7 @@ class FileNamerApp:
             selectforeground="#cdd6f4",
             relief=tk.FLAT,
             highlightthickness=0,
+            height=6,
             yscrollcommand=scrollbar.set,
         )
         self.file_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -231,6 +244,25 @@ class FileNamerApp:
         )
         self.status_label.pack(anchor="w", pady=(8, 0))
 
+    def _fit_window(self) -> None:
+        """Size and center the window so all controls are visible on launch."""
+        self.root.update_idletasks()
+
+        req_w = self.root.winfo_reqwidth()
+        req_h = self.root.winfo_reqheight()
+        screen_w = self.root.winfo_screenwidth()
+        screen_h = self.root.winfo_screenheight()
+
+        width = min(max(req_w + 8, 580), screen_w - 48)
+        height = min(max(req_h + 8, 560), screen_h - 48)
+        min_w = min(max(req_w, 520), width)
+        min_h = min(max(req_h, 500), height)
+
+        self.root.minsize(min_w, min_h)
+        x = max(0, (screen_w - width) // 2)
+        y = max(0, (screen_h - height) // 2)
+        self.root.geometry(f"{width}x{height}+{x}+{y}")
+
     def _setup_drag_drop(self):
         if TkinterDnD is None or DND_FILES is None:
             self.status_label.config(
@@ -269,7 +301,7 @@ class FileNamerApp:
                     fg="#f9e2af",
                 )
         except Exception as exc:
-            self.status_label.config(text=f"Error al cargar: {exc}", fg="#f38ba8")
+            self.status_label.config(text=f"Error loading: {exc}", fg="#f38ba8")
 
     def _expand_paths(self, paths) -> list[str]:
         """If a folder is dropped, include images inside."""
@@ -434,6 +466,7 @@ def _ensure_tkdnd():
 
 
 def main():
+    _enable_dpi_awareness()
     _ensure_tkdnd()
     root = TkinterDnD.Tk()
     FileNamerApp(root)
