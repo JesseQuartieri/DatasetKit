@@ -1,14 +1,17 @@
-# FileNamer
+# DatasetKit
 
-A simple desktop tool to batch-rename image files in order using a custom base name.
+A desktop tool to prepare image datasets for LoRA training. Rename images in numbered order and optionally generate caption `.txt` files with trigger word support.
 
 ## Features
 
 - Drag and drop images into the app
 - Browse files or select an entire folder
 - Rename with a numbered sequence (e.g. `Sara_droidV02_001`, `Sara_droidV02_002`, ...)
+- Create matching caption `.txt` files for each image (Kohya / sd-scripts compatible)
+- Optional trigger word prefill with `, ` suffix for easy caption pasting
+- Skips existing `.txt` files to protect your work
+- Open output folder when done
 - Supports common image formats: JPG, PNG, GIF, BMP, WebP, TIFF, ICO, HEIC, HEIF, AVIF
-- Safe renaming using temporary files to avoid name collisions
 
 ## Requirements
 
@@ -32,7 +35,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-**Windows:** double-click `StartFileNamer.bat`
+**Windows:** double-click `StartDatasetKit.bat`
 
 **Or run manually:**
 
@@ -40,9 +43,10 @@ pip install -r requirements.txt
 python filenamer.py
 ```
 
-1. Load images by dragging them in, or use **Browse...** / **Folder...**
+1. Load images by dragging them in, or use **Browse** / **Folder**
 2. Enter a **Base name** (e.g. `Sara_droidV02_`)
-3. Click **Start** and confirm the rename
+3. Optionally enable **Create caption .txt files** and set a **Trigger word**
+4. Click **START RENAME** and confirm
 
 ## License
 
