@@ -23,8 +23,8 @@ A desktop tool to prepare image datasets for LoRA training. Rename images in num
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/JesseQuartieri/FileNamer.git
-cd FileNamer
+git clone https://github.com/JesseQuartieri/DatasetKit.git
+cd DatasetKit
 ```
 
 2. Install dependencies:
