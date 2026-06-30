@@ -1,0 +1,9 @@
+{
+  "api_key": "",
+  "model_mode": "reasoning",
+  "caption_focus": "mixed",
+  "training_target": "flux",
+  "krea2_lora_type": "character",
+  "caption_mode": "none",
+  "grok_max_long_edge": 1536
+}
